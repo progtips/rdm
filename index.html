@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RDM — тест направления движения точек</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>Random Dot Motion (RDM)</h1>
+      <p class="subtitle">Оценка порога восприятия направления движения</p>
+    </header>
+
+    <!-- Стартовый экран -->
+    <section id="screen-start" class="panel screen">
+      <p class="instruction">
+        На экране будут двигаться точки. Часть точек движется в одном направлении.
+        Нужно определить направление согласованного движения.
+      </p>
+      <p class="hint-keys">
+        Ответ: <kbd>←</kbd> влево &nbsp;·&nbsp; <kbd>→</kbd> вправо
+      </p>
+
+      <fieldset class="settings">
+        <legend>Параметры теста</legend>
+        <div class="grid">
+          <label>Количество точек <input type="number" id="cfg-numPoints" min="10" max="500" /></label>
+          <label>Ширина области (px) <input type="number" id="cfg-areaWidth" min="200" max="1200" /></label>
+          <label>Высота области (px) <input type="number" id="cfg-areaHeight" min="200" max="800" /></label>
+          <label>Скорость (px/с) <input type="number" id="cfg-dotSpeed" min="10" max="500" step="5" /></label>
+          <label>Размер точки (px) <input type="number" id="cfg-dotSize" min="0.5" max="6" step="0.5" /></label>
+          <label>Длительность trial (мс) <input type="number" id="cfg-trialDurationMs" min="200" max="10000" step="50" /></label>
+          <label>Фиксация креста (мс) <input type="number" id="cfg-fixationMs" min="100" max="2000" step="50" /></label>
+          <label>Повторов на уровень coherence <input type="number" id="cfg-repsPerLevel" min="1" max="50" /></label>
+          <label>Практика (число trial) <input type="number" id="cfg-practiceTrials" min="0" max="30" /></label>
+        </div>
+        <label class="full">
+          Уровни coherence (%), через запятую
+          <input type="text" id="cfg-coherenceLevels" placeholder="50, 30, 20, 10" />
+        </label>
+      </fieldset>
+
+      <div class="actions">
+        <button type="button" id="btn-start" class="btn primary">Начать</button>
+      </div>
+    </section>
+
+    <!-- Экран эксперимента -->
+    <section id="screen-run" class="panel screen hidden">
+      <div class="run-bar">
+        <span id="run-label">Тест</span>
+        <span id="run-progress">Trial 0 из 0</span>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="rdm-canvas" width="600" height="400" aria-label="Поле с движущимися точками"></canvas>
+      </div>
+      <p id="run-hint" class="run-hint">Смотрите на точки и отвечайте клавишами со стрелками.</p>
+      <div class="actions">
+        <button type="button" id="btn-abort" class="btn ghost">Прервать</button>
+      </div>
+    </section>
+
+    <!-- Результаты -->
+    <section id="screen-results" class="panel screen hidden results-screen">
+      <h2 class="results-title">Результаты теста</h2>
+      <p id="results-meta" class="results-meta"></p>
+
+      <div id="results-interpret" class="results-interpret"></div>
+
+      <p id="threshold-line" class="threshold-line" aria-live="polite"></p>
+
+      <div id="metric-cards" class="metric-cards"></div>
+
+      <div class="chart-block">
+        <h3 class="block-heading">Точность по уровням coherence</h3>
+        <p class="block-hint">По горизонтали — доля согласованно движущихся точек; по вертикали — процент верных ответов. Пунктирная линия — критерий порога 75%.</p>
+        <div class="chart-wrap">
+          <p id="chart-error" class="chart-fallback hidden" role="status"></p>
+          <canvas id="chart-accuracy" height="220" aria-label="График точности по coherence"></canvas>
+        </div>
+      </div>
+
+      <div class="coh-table-block">
+        <h3 class="block-heading">Сводка по уровням</h3>
+        <div class="table-wrap table-wrap--coh">
+          <table class="results-table results-table--coh" id="table-by-coherence">
+            <thead>
+              <tr>
+                <th>Coherence</th>
+                <th>Trial</th>
+                <th>Точность</th>
+                <th>Среднее RT</th>
+              </tr>
+            </thead>
+            <tbody id="coh-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="explain-block" class="explain-block"></div>
+
+      <details class="details-trials">
+        <summary>Все испытания (подробно)</summary>
+        <div class="table-wrap">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Coherence %</th>
+                <th>Направление</th>
+                <th>Ответ</th>
+                <th>Исход</th>
+                <th>RT (мс)</th>
+              </tr>
+            </thead>
+            <tbody id="results-body"></tbody>
+          </table>
+        </div>
+      </details>
+
+      <div class="actions actions--results">
+        <button type="button" id="btn-csv" class="btn">Скачать CSV</button>
+        <button type="button" id="btn-repeat" class="btn primary">Пройти тест заново</button>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <small>Локальный запуск: откройте <code>index.html</code> в браузере.</small>
+    </footer>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
