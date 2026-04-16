@@ -947,12 +947,43 @@ function fillFormDefaults() {
   g('cfg-coherenceLevels', c.coherenceLevels.join(', '));
 }
 
+/**
+ * Панели стартового экрана: «Главная» (инструкция) или «Параметры» (настройки).
+ * @param {'home' | 'params'} panel
+ */
+function setStartPanel(panel) {
+  const home = document.getElementById('start-panel-home');
+  const params = document.getElementById('start-panel-params');
+  const btnMain = document.getElementById('nav-main');
+  const btnParams = document.getElementById('nav-params');
+  if (!home || !params) return;
+  const isHome = panel === 'home';
+  home.classList.toggle('hidden', !isHome);
+  params.classList.toggle('hidden', isHome);
+  if (btnMain) {
+    btnMain.classList.toggle('nav-btn--active', isHome);
+    if (isHome) btnMain.setAttribute('aria-current', 'page');
+    else btnMain.removeAttribute('aria-current');
+  }
+  if (btnParams) {
+    btnParams.classList.toggle('nav-btn--active', !isHome);
+    if (!isHome) btnParams.setAttribute('aria-current', 'page');
+    else btnParams.removeAttribute('aria-current');
+  }
+}
+
 function showScreen(name) {
   document.getElementById('screen-start').classList.toggle('hidden', name !== 'start');
   document.getElementById('screen-run').classList.toggle('hidden', name !== 'run');
   const res = document.getElementById('screen-results');
   res.classList.toggle('hidden', name !== 'results');
   document.body.classList.toggle('results-open', name === 'results');
+
+  const nav = document.getElementById('app-nav');
+  if (nav) nav.classList.toggle('hidden', name !== 'start');
+  if (name === 'start') {
+    setStartPanel('home');
+  }
 
   if (name !== 'results') {
     res.classList.remove('results-screen--visible');
@@ -974,12 +1005,16 @@ let lastConfig = { ...DEFAULT_CONFIG };
 
 function init() {
   fillFormDefaults();
+  setStartPanel('home');
 
   const canvas = document.getElementById('rdm-canvas');
   const runProgress = document.getElementById('run-progress');
   const runLabel = document.getElementById('run-label');
 
   let controller = null;
+
+  document.getElementById('nav-main').addEventListener('click', () => setStartPanel('home'));
+  document.getElementById('nav-params').addEventListener('click', () => setStartPanel('params'));
 
   document.getElementById('btn-start').addEventListener('click', () => {
     let config;

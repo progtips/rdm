@@ -14,37 +14,57 @@
       <p class="subtitle">Оценка порога восприятия направления движения</p>
     </header>
 
+    <nav class="app-nav" id="app-nav" aria-label="Разделы стартового экрана">
+      <ul class="app-nav__list">
+        <li>
+          <button type="button" class="nav-btn nav-btn--active" id="nav-main">
+            Главная
+          </button>
+        </li>
+        <li>
+          <button type="button" class="nav-btn" id="nav-params">Параметры</button>
+        </li>
+      </ul>
+    </nav>
+
     <!-- Стартовый экран -->
     <section id="screen-start" class="panel screen">
-      <p class="instruction">
-        На экране будут двигаться точки. Часть точек движется в одном направлении.
-        Нужно определить направление согласованного движения.
-      </p>
-      <p class="hint-keys">
-        Ответ: <kbd>←</kbd> влево &nbsp;·&nbsp; <kbd>→</kbd> вправо
-      </p>
+      <div id="start-panel-home">
+        <p class="instruction">
+          На экране будут двигаться точки. Часть точек движется в одном направлении.
+          Нужно определить направление согласованного движения.
+        </p>
+        <p class="hint-keys">
+          Ответ: <kbd>←</kbd> влево &nbsp;·&nbsp; <kbd>→</kbd> вправо
+        </p>
 
-      <fieldset class="settings">
-        <legend>Параметры теста</legend>
-        <div class="grid">
-          <label>Количество точек <input type="number" id="cfg-numPoints" min="10" max="500" /></label>
-          <label>Ширина области (px) <input type="number" id="cfg-areaWidth" min="200" max="1200" /></label>
-          <label>Высота области (px) <input type="number" id="cfg-areaHeight" min="200" max="800" /></label>
-          <label>Скорость (px/с) <input type="number" id="cfg-dotSpeed" min="10" max="500" step="5" /></label>
-          <label>Размер точки (px) <input type="number" id="cfg-dotSize" min="0.5" max="6" step="0.5" /></label>
-          <label>Длительность trial (мс) <input type="number" id="cfg-trialDurationMs" min="200" max="10000" step="50" /></label>
-          <label>Фиксация креста (мс) <input type="number" id="cfg-fixationMs" min="100" max="2000" step="50" /></label>
-          <label>Повторов на уровень coherence <input type="number" id="cfg-repsPerLevel" min="1" max="50" /></label>
-          <label>Практика (число trial) <input type="number" id="cfg-practiceTrials" min="0" max="30" /></label>
+        <div class="actions">
+          <button type="button" id="btn-start" class="btn primary">Начать</button>
         </div>
-        <label class="full">
-          Уровни coherence (%), через запятую
-          <input type="text" id="cfg-coherenceLevels" placeholder="50, 30, 20, 10" />
-        </label>
-      </fieldset>
+      </div>
 
-      <div class="actions">
-        <button type="button" id="btn-start" class="btn primary">Начать</button>
+      <div id="start-panel-params" class="hidden">
+        <p class="params-lead">
+          Настройте условия эксперимента. Значения сохраняются при переключении на «Главная».
+        </p>
+        <fieldset class="settings">
+          <legend>Параметры теста</legend>
+          <div class="grid">
+            <label>Количество точек <input type="number" id="cfg-numPoints" min="10" max="500" /></label>
+            <label>Ширина области (px) <input type="number" id="cfg-areaWidth" min="200" max="1200" /></label>
+            <label>Высота области (px) <input type="number" id="cfg-areaHeight" min="200" max="800" /></label>
+            <label>Скорость (px/с) <input type="number" id="cfg-dotSpeed" min="10" max="500" step="5" /></label>
+            <label>Размер точки (px) <input type="number" id="cfg-dotSize" min="0.5" max="6" step="0.5" /></label>
+            <label>Длительность trial (мс) <input type="number" id="cfg-trialDurationMs" min="200" max="10000" step="50" /></label>
+            <label>Фиксация креста (мс) <input type="number" id="cfg-fixationMs" min="100" max="2000" step="50" /></label>
+            <label>Повторов на уровень coherence <input type="number" id="cfg-repsPerLevel" min="1" max="50" /></label>
+            <label>Практика (число trial) <input type="number" id="cfg-practiceTrials" min="0" max="30" /></label>
+          </div>
+          <label class="full">
+            Уровни coherence (%), через запятую
+            <input type="text" id="cfg-coherenceLevels" placeholder="50, 30, 20, 10" />
+          </label>
+        </fieldset>
       </div>
     </section>
 
