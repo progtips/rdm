@@ -888,6 +888,39 @@ function downloadText(filename, text) {
   URL.revokeObjectURL(url);
 }
 
+/**
+ * Короткий сигнал о начале теста (Web Audio API, без внешних файлов).
+ * Вызывается из обработчика клика — контекст обычно не заблокирован.
+ */
+function playTestStartSound() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    const ctx = new AC();
+    const run = () => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.type = 'sine';
+      o.frequency.setValueAtTime(660, ctx.currentTime);
+      const t0 = ctx.currentTime;
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(0.11, t0 + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.28);
+      o.start(t0);
+      o.stop(t0 + 0.3);
+    };
+    if (ctx.state === 'suspended') {
+      void ctx.resume().then(run);
+    } else {
+      run();
+    }
+  } catch (_) {
+    /* звук недоступен */
+  }
+}
+
 // ——————————————————————————————————————————————————————————————
 // UI: чтение конфига, экраны, запуск
 // ——————————————————————————————————————————————————————————————
@@ -1030,7 +1063,8 @@ function init() {
     lastResults = [];
 
     showScreen('run');
-    runLabel.textContent = config.practiceTrials > 0 ? 'Практика, затем тест' : 'Тест';
+    runLabel.textContent = 'Тест';
+    playTestStartSound();
 
     controller = new ExperimentController({
       canvas,
