@@ -45,6 +45,7 @@ function wrap(value, max) {
 }
 
 function parseCoherenceLevels(text) {
+  const t = window.RDM_I18N.t;
   return text
     .split(/[,;\s]+/)
     .map((s) => s.trim())
@@ -52,7 +53,7 @@ function parseCoherenceLevels(text) {
     .map((s) => {
       const n = Number(s);
       if (Number.isNaN(n) || n < 0 || n > 100) {
-        throw new Error(`Некорректный уровень coherence: "${s}"`);
+        throw new Error(t('err.badCoherence', { s }));
       }
       return n;
     });
@@ -314,10 +315,11 @@ class ExperimentController {
   }
 
   _progressLabel(plan) {
+    const t = window.RDM_I18N.t;
     const total = this.queue.length;
     const i = this.currentIndex + 1;
-    const mode = plan.practice ? 'Практика' : 'Тест';
-    return `${mode} · Trial ${i} из ${total}`;
+    const mode = plan.practice ? t('exp.practice') : t('exp.test');
+    return t('exp.progress', { mode, trial: t('exp.trial'), i, total });
   }
 
   _scheduleFrame() {
@@ -346,7 +348,7 @@ class ExperimentController {
       this._trialStartPerf = now;
       this._stimulusDeadline = now + c.trialDurationMs;
       this._lastFrameTime = now;
-      this.onPhaseMessage(`${this._progressLabel(plan)} · определите направление`);
+      this.onPhaseMessage(`${this._progressLabel(plan)} · ${window.RDM_I18N.t('exp.judgeDir')}`);
     }
 
     if (this.phase === 'stimulus') {
@@ -422,15 +424,16 @@ class ExperimentController {
 
     this.onTrialComplete(result);
 
+    const t = window.RDM_I18N.t;
     let msg = '';
     if (plan.practice) {
-      if (outcome === 'missed') msg = 'Пропуск · время вышло';
-      else if (outcome === 'correct') msg = `Верно · ${rtMs} мс`;
-      else msg = `Неверно · ${rtMs} мс`;
+      if (outcome === 'missed') msg = t('fb.missedPractice');
+      else if (outcome === 'correct') msg = t('fb.correct', { ms: rtMs });
+      else msg = t('fb.incorrect', { ms: rtMs });
     } else {
-      if (outcome === 'missed') msg = 'Пропуск';
-      else if (outcome === 'correct') msg = `Верно · ${rtMs} мс`;
-      else msg = `Неверно · ${rtMs} мс`;
+      if (outcome === 'missed') msg = t('fb.missed');
+      else if (outcome === 'correct') msg = t('fb.correct', { ms: rtMs });
+      else msg = t('fb.incorrect', { ms: rtMs });
     }
 
     this.phase = 'feedback';
@@ -548,30 +551,29 @@ function pointColorForAccuracy(acc) {
  * 2–3 короткие строки вывода для пользователя без подготовки в статистике.
  */
 function buildInterpretationLines(summary) {
+  const t = window.RDM_I18N.t;
   const rows = summary.rowsByCoherence;
   const lines = [];
   if (rows.length === 0) {
-    return ['Нет данных по основному блоку испытаний.'];
+    return [t('interp.noData')];
   }
 
   const thr = summary.thresholdCoherence;
   if (thr != null) {
     lines.push(
-      `Вы уверенно удерживаете не менее ${THRESHOLD_ACCURACY_PERCENT}% точности начиная с coherence ${thr}% — это ориентир «вашего порога» в этой сессии.`
+      t('interp.thresholdOk', { pct: THRESHOLD_ACCURACY_PERCENT, thr })
     );
   } else {
-    lines.push(
-      `Ни на одном из проверенных уровней coherence не набрано ${THRESHOLD_ACCURACY_PERCENT}% верных ответов — порог в этом смысле не достигнут.`
-    );
+    lines.push(t('interp.thresholdFail', { pct: THRESHOLD_ACCURACY_PERCENT }));
   }
 
   const confident = rows.filter((r) => r.accuracy >= 80);
   if (confident.length) {
     const minC = Math.min(...confident.map((r) => r.coherence));
-    lines.push(`Вы уверенно различаете направление при coherence ${minC}% и выше.`);
+    lines.push(t('interp.confident', { min: minC }));
   } else if (rows.some((r) => r.accuracy >= 65)) {
     const minC = Math.min(...rows.filter((r) => r.accuracy >= 65).map((r) => r.coherence));
-    lines.push(`Вы достаточно стабильно справляетесь с задачей примерно с ${minC}% coherence.`);
+    lines.push(t('interp.stable', { min: minC }));
   }
 
   const sortedAsc = [...rows].sort((a, b) => a.coherence - b.coherence);
@@ -579,7 +581,7 @@ function buildInterpretationLines(summary) {
     const a = sortedAsc[i];
     const b = sortedAsc[i + 1];
     if (a.accuracy - b.accuracy >= 25 && b.accuracy < 55) {
-      lines.push(`Снижение точности заметно между ${a.coherence}% и ${b.coherence}% coherence.`);
+      lines.push(t('interp.drop', { a: a.coherence, b: b.coherence }));
       break;
     }
   }
@@ -602,71 +604,69 @@ function escapeHtml(s) {
 }
 
 function renderThresholdLine(summary) {
+  const t = window.RDM_I18N.t;
   const el = document.getElementById('threshold-line');
   if (summary.rowsByCoherence.length === 0) {
-    el.textContent = 'Недостаточно данных для оценки порога.';
+    el.textContent = t('threshold.none');
     return;
   }
   if (summary.thresholdReached) {
-    el.textContent = `Ваш порог восприятия: ~${summary.thresholdCoherence}% coherence (критерий ${THRESHOLD_ACCURACY_PERCENT}% верных ответов).`;
+    el.textContent = t('threshold.ok', {
+      thr: summary.thresholdCoherence,
+      pct: THRESHOLD_ACCURACY_PERCENT,
+    });
   } else {
-    el.textContent = `Порог восприятия (${THRESHOLD_ACCURACY_PERCENT}% точности) не достигнут на выбранных уровнях.`;
+    el.textContent = t('threshold.fail', { pct: THRESHOLD_ACCURACY_PERCENT });
   }
 }
 
 function renderMetricCards(summary) {
+  const t = window.RDM_I18N.t;
   const wrap = document.getElementById('metric-cards');
   const acc = summary.accuracy;
   const accClass = accTierClass(acc);
-  const meanStr = summary.meanRT != null ? `${summary.meanRT} мс` : '—';
+  const meanStr =
+    summary.meanRT != null ? `${summary.meanRT} ${t('unit.ms')}` : t('metric.dash');
   const best =
     summary.bestCoherence != null && summary.bestAccuracy != null
       ? `${summary.bestCoherence}% (${summary.bestAccuracy}%)`
-      : '—';
+      : t('metric.dash');
   const thrStr = summary.thresholdReached
     ? `~${summary.thresholdCoherence}%`
-    : 'не достигнут';
+    : t('metric.thrNA');
 
   wrap.innerHTML = `
     <div class="metric-card">
-      <p class="metric-card__label">Общая точность</p>
+      <p class="metric-card__label">${t('metric.acc')}</p>
       <p class="metric-card__value ${accClass}">${acc}%</p>
     </div>
     <div class="metric-card">
-      <p class="metric-card__label">Среднее время реакции</p>
+      <p class="metric-card__label">${t('metric.rt')}</p>
       <p class="metric-card__value neutral">${meanStr}</p>
-      <p class="metric-card__sub">по верным ответам</p>
+      <p class="metric-card__sub">${t('metric.rtSub')}</p>
     </div>
     <div class="metric-card">
-      <p class="metric-card__label">Лучший уровень</p>
+      <p class="metric-card__label">${t('metric.best')}</p>
       <p class="metric-card__value neutral metric-card__value--compact">${best}</p>
-      <p class="metric-card__sub">coherence (доля верных на уровне)</p>
+      <p class="metric-card__sub">${t('metric.bestSub')}</p>
     </div>
     <div class="metric-card">
-      <p class="metric-card__label">Порог восприятия</p>
+      <p class="metric-card__label">${t('metric.thr')}</p>
       <p class="metric-card__value neutral metric-card__value--compact">${thrStr}</p>
-      <p class="metric-card__sub">coherence при ${THRESHOLD_ACCURACY_PERCENT}% точности</p>
+      <p class="metric-card__sub">${t('metric.thrSub', { pct: THRESHOLD_ACCURACY_PERCENT })}</p>
     </div>
   `;
 }
 
 function renderExplainBlock() {
+  const t = window.RDM_I18N.t;
   const el = document.getElementById('explain-block');
   el.innerHTML = `
-    <h3 class="block-heading">Что это значит</h3>
+    <h3 class="block-heading">${escapeHtml(t('explain.title'))}</h3>
     <div class="explain-text">
-      <p>
-        <strong>Coherence (согласованность)</strong> — это доля точек, которые движутся в одном направлении;
-        остальные движутся хаотично. Чем ниже coherence, тем слабее «сигнал» среди шума и тем сложнее увидеть общее направление.
-      </p>
-      <p>
-        <strong>Лучшая чувствительность</strong> — когда вы сохраняете высокую точность даже при <strong>низком</strong> coherence: слабый сигнал среди шума вам всё ещё «виден».
-        Если точность заметно падает уже при <strong>высоком</strong> coherence, в этой сессии задача даётся тяжелее: для уверенного ответа нужен более сильный сигнал.
-      </p>
-      <p>
-        Чем ниже процент coherence, при котором вы всё ещё стабильно угадываете направление, тем выше чувствительность к слабым сигналам в этой короткой проверке.
-        Это не медицинский диагноз, а удобная оценка для самонаблюдения и тренировки.
-      </p>
+      <p>${t('explain.p1')}</p>
+      <p>${t('explain.p2')}</p>
+      <p>${t('explain.p3')}</p>
     </div>
   `;
 }
@@ -679,10 +679,10 @@ function renderAccuracyChart(rows) {
     errEl.textContent = '';
   }
 
+  const t = window.RDM_I18N.t;
   if (typeof Chart === 'undefined') {
     if (errEl) {
-      errEl.textContent =
-        'Не удалось загрузить график. Проверьте подключение к интернету (Chart.js загружается с CDN).';
+      errEl.textContent = t('chart.error');
       errEl.classList.remove('hidden');
     }
     return;
@@ -710,7 +710,7 @@ function renderAccuracyChart(rows) {
       labels,
       datasets: [
         {
-          label: 'Точность',
+          label: t('chart.dsAccuracy'),
           data,
           borderColor: '#2563eb',
           backgroundColor: 'rgba(37, 99, 235, 0.12)',
@@ -724,7 +724,7 @@ function renderAccuracyChart(rows) {
           pointHoverRadius: 8,
         },
         {
-          label: `Критерий ${THRESHOLD_ACCURACY_PERCENT}%`,
+          label: t('chart.dsCriterion', { pct: THRESHOLD_ACCURACY_PERCENT }),
           data: thresholdLine,
           borderColor: 'rgba(100, 116, 139, 0.75)',
           backgroundColor: 'transparent',
@@ -742,13 +742,13 @@ function renderAccuracyChart(rows) {
       interaction: { mode: 'index', intersect: false },
       scales: {
         x: {
-          title: { display: true, text: 'Coherence, %' },
+          title: { display: true, text: t('chart.xTitle') },
           grid: { color: 'rgba(0,0,0,0.06)' },
         },
         y: {
           min: 0,
           max: 100,
-          title: { display: true, text: 'Точность, %' },
+          title: { display: true, text: t('chart.yTitle') },
           grid: { color: 'rgba(0,0,0,0.06)' },
         },
       },
@@ -763,7 +763,7 @@ function renderAccuracyChart(rows) {
           callbacks: {
             label(ctx) {
               const r = rows[ctx.dataIndex];
-              return ` Точность: ${r.accuracy}% · ${r.n} trial`;
+              return ` ${t('chart.tooltip', { acc: r.accuracy, n: r.n })}`;
             },
           },
         },
@@ -773,12 +773,13 @@ function renderAccuracyChart(rows) {
 }
 
 function renderCoherenceTable(rows) {
+  const t = window.RDM_I18N.t;
   const body = document.getElementById('coh-table-body');
   body.innerHTML = '';
   for (const r of rows) {
     const tr = document.createElement('tr');
     const tier = accTierClass(r.accuracy);
-    const rtStr = r.meanRT != null ? `${r.meanRT} мс` : '—';
+    const rtStr = r.meanRT != null ? `${r.meanRT} ${t('unit.ms')}` : t('metric.dash');
     tr.innerHTML = `
       <td>${r.coherence}%</td>
       <td>${r.n}</td>
@@ -790,21 +791,22 @@ function renderCoherenceTable(rows) {
 }
 
 function renderTrialResultsTable(results) {
+  const t = window.RDM_I18N.t;
   const body = document.getElementById('results-body');
   const main = results.filter((r) => !r.practice);
   body.innerHTML = '';
   for (const r of main) {
     const tr = document.createElement('tr');
-    const dir = (d) => (d === -1 ? 'влево' : 'вправо');
-    const resp = r.userResponse == null ? '—' : dir(r.userResponse);
+    const dir = (d) => (d === -1 ? t('dir.left') : t('dir.right'));
+    const resp = r.userResponse == null ? t('metric.dash') : dir(r.userResponse);
     let outcomeClass = 'tag-miss';
-    let outcomeText = 'пропуск';
+    let outcomeText = t('out.missed');
     if (r.outcome === 'correct') {
       outcomeClass = 'tag-ok';
-      outcomeText = 'верно';
+      outcomeText = t('out.correct');
     } else if (r.outcome === 'incorrect') {
       outcomeClass = 'tag-bad';
-      outcomeText = 'неверно';
+      outcomeText = t('out.incorrect');
     }
     tr.innerHTML = `
       <td>${r.trialIndex}</td>
@@ -812,7 +814,7 @@ function renderTrialResultsTable(results) {
       <td>${dir(r.trueDirection)}</td>
       <td>${resp}</td>
       <td class="${outcomeClass}">${outcomeText}</td>
-      <td>${r.reactionTimeMs == null ? '—' : r.reactionTimeMs}</td>
+      <td>${r.reactionTimeMs == null ? t('metric.dash') : r.reactionTimeMs}</td>
     `;
     body.appendChild(tr);
   }
@@ -830,13 +832,20 @@ function pluralRu(n, one, few, many) {
 /**
  * Полный экран результатов: интерпретация, порог, карточки, график, таблицы.
  */
+function formatTrialMetaLine(n) {
+  const { t, getLang } = window.RDM_I18N;
+  if (!n) return '';
+  if (getLang() === 'en') {
+    return `${t('results.metaPrefix')} ${n} ${n === 1 ? 'trial' : 'trials'}`;
+  }
+  return `${t('results.metaPrefix')} ${n} ${pluralRu(n, 'испытание', 'испытания', 'испытаний')}`;
+}
+
 function renderResultsScreen(results) {
   const sum = summarize(results);
   const meta = document.getElementById('results-meta');
   if (meta) {
-    meta.textContent = sum.total
-      ? `Основной блок: ${sum.total} ${pluralRu(sum.total, 'испытание', 'испытания', 'испытаний')}`
-      : '';
+    meta.textContent = sum.total ? formatTrialMetaLine(sum.total) : '';
   }
   renderInterpretationBlock(sum);
   renderThresholdLine(sum);
@@ -938,13 +947,14 @@ function readConfigFromForm() {
   const practiceTrials = Number(g('cfg-practiceTrials').value);
   const coherenceLevels = parseCoherenceLevels(g('cfg-coherenceLevels').value);
 
+  const tr = window.RDM_I18N.t;
   if ([numPoints, areaWidth, areaHeight, dotSpeed, trialDurationMs, fixationMs, repsPerLevel].some(
     (v) => Number.isNaN(v) || v <= 0
   )) {
-    throw new Error('Проверьте числовые параметры (должны быть положительными).');
+    throw new Error(tr('err.params'));
   }
   if (coherenceLevels.length === 0) {
-    throw new Error('Укажите хотя бы один уровень coherence.');
+    throw new Error(tr('err.coherenceList'));
   }
 
   return {
@@ -1037,6 +1047,9 @@ let lastResults = [];
 let lastConfig = { ...DEFAULT_CONFIG };
 
 function init() {
+  window.RDM_I18N.applyDom(document);
+  window.RDM_I18N.updateLangButton();
+
   fillFormDefaults();
   setStartPanel('home');
 
@@ -1049,12 +1062,23 @@ function init() {
   document.getElementById('nav-main').addEventListener('click', () => setStartPanel('home'));
   document.getElementById('nav-params').addEventListener('click', () => setStartPanel('params'));
 
+  document.getElementById('btn-lang').addEventListener('click', () => {
+    const I = window.RDM_I18N;
+    I.setLang(I.getLang() === 'ru' ? 'en' : 'ru');
+    I.applyDom(document);
+    I.updateLangButton();
+    const res = document.getElementById('screen-results');
+    if (res && !res.classList.contains('hidden') && lastResults.length) {
+      renderResultsScreen(lastResults);
+    }
+  });
+
   document.getElementById('btn-start').addEventListener('click', () => {
     let config;
     try {
       config = readConfigFromForm();
     } catch (err) {
-      alert(err.message || String(err));
+      alert(`${window.RDM_I18N.t('alert.config')}\n${err.message || String(err)}`);
       return;
     }
 
@@ -1063,7 +1087,7 @@ function init() {
     lastResults = [];
 
     showScreen('run');
-    runLabel.textContent = 'Тест';
+    runLabel.textContent = window.RDM_I18N.t('run.label');
     playTestStartSound();
 
     controller = new ExperimentController({

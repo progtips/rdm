@@ -40,8 +40,42 @@ body.results-open .app {
 }
 
 .header {
-  text-align: center;
+  position: relative;
   margin-bottom: 1.75rem;
+  padding-right: 3.75rem;
+}
+
+.header__row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.header__titles {
+  text-align: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-lang {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 2.75rem;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.btn-lang:hover {
+  background: var(--bg);
 }
 
 .header h1 {

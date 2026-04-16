@@ -3,130 +3,121 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RDM — тест направления движения точек</title>
+  <title data-i18n-key="page.title">RDM — тест направления движения точек</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="i18n.js" defer></script>
+  <script src="script.js" defer></script>
 </head>
 <body>
   <div class="app">
     <header class="header">
-      <h1>Random Dot Motion (RDM)</h1>
-      <p class="subtitle">Оценка порога восприятия направления движения</p>
+      <div class="header__row">
+        <div class="header__titles">
+          <h1>Random Dot Motion (RDM)</h1>
+          <p class="subtitle" data-i18n="header.subtitle"></p>
+        </div>
+        <button type="button" id="btn-lang" class="btn btn-lang" title="">EN</button>
+      </div>
     </header>
 
-    <nav class="app-nav" id="app-nav" aria-label="Разделы стартового экрана">
+    <nav class="app-nav" id="app-nav" data-i18n="nav.aria" data-i18n-attr="aria-label">
       <ul class="app-nav__list">
         <li>
-          <button type="button" class="nav-btn nav-btn--active" id="nav-main">
-            Главная
-          </button>
+          <button type="button" class="nav-btn nav-btn--active" id="nav-main" data-i18n="nav.main"></button>
         </li>
         <li>
-          <button type="button" class="nav-btn" id="nav-params">Параметры</button>
+          <button type="button" class="nav-btn" id="nav-params" data-i18n="nav.params"></button>
         </li>
       </ul>
     </nav>
 
-    <!-- Стартовый экран -->
     <section id="screen-start" class="panel screen">
       <div id="start-panel-home">
         <article class="home-content">
           <section class="home-section">
-            <h2 class="home-heading">🧠 Что это за тест?</h2>
-            <p>
-              Тест Random Dot Motion (RDM) проверяет, насколько хорошо вы улавливаете слабые визуальные сигналы.
-            </p>
-            <p>
-              На экране появляется множество движущихся точек.
-              Большинство из них движется хаотично, но небольшая часть — в одном направлении (влево или вправо).
-            </p>
-            <p>Ваша задача — определить это направление.</p>
+            <h2 class="home-heading" data-i18n="home.whatTitle"></h2>
+            <p data-i18n="home.whatP1"></p>
+            <p data-i18n="home.whatP2"></p>
+            <p data-i18n="home.whatP3"></p>
           </section>
 
           <section class="home-section">
-            <h2 class="home-heading">🎯 Зачем проходить тест?</h2>
-            <p>Этот тест позволяет:</p>
+            <h2 class="home-heading" data-i18n="home.whyTitle"></h2>
+            <p data-i18n="home.whyLead"></p>
             <ul class="home-list">
-              <li>Оценить чувствительность зрительного восприятия</li>
-              <li>Понять, насколько хорошо вы замечаете слабые закономерности в шуме</li>
-              <li>Измерить свой порог восприятия (насколько слабый сигнал вы способны уловить)</li>
-              <li>Проверить скорость реакции и интуицию</li>
+              <li data-i18n="home.whyLi1"></li>
+              <li data-i18n="home.whyLi2"></li>
+              <li data-i18n="home.whyLi3"></li>
+              <li data-i18n="home.whyLi4"></li>
             </ul>
-            <p>
-              Чем меньший процент «упорядоченных» точек вы можете распознать — тем выше ваша точность восприятия.
-            </p>
+            <p data-i18n="home.whyP2"></p>
           </section>
 
           <section class="home-section">
-            <h2 class="home-heading">▶️ Как пройти тест?</h2>
+            <h2 class="home-heading" data-i18n="home.howTitle"></h2>
             <ol class="home-steps">
-              <li>Нажмите кнопку «Начать»</li>
-              <li>Смотрите на движущиеся точки в центре экрана</li>
+              <li data-i18n="home.how1"></li>
+              <li data-i18n="home.how2"></li>
               <li>
-                Определите, куда движется основная масса точек:
+                <span data-i18n="home.how3lead"></span>
                 <ul class="home-list home-list--nested">
-                  <li>⬅️ Стрелка влево — если движение влево</li>
-                  <li>➡️ Стрелка вправо — если движение вправо</li>
+                  <li data-i18n="home.how3a"></li>
+                  <li data-i18n="home.how3b"></li>
                 </ul>
               </li>
-              <li>Отвечайте как можно быстрее и точнее</li>
-              <li>После серии попыток вы увидите свои результаты</li>
+              <li data-i18n="home.how4"></li>
+              <li data-i18n="home.how5"></li>
             </ol>
           </section>
 
-          <p class="home-tip">
-            💡 Совет: не пытайтесь «разглядеть каждую точку» — лучше доверяйте общему ощущению движения.
-          </p>
+          <p class="home-tip" data-i18n="home.tip"></p>
 
           <div class="actions">
-            <button type="button" id="btn-start" class="btn primary">Начать</button>
+            <button type="button" id="btn-start" class="btn primary" data-i18n="btn.start"></button>
           </div>
         </article>
       </div>
 
       <div id="start-panel-params" class="hidden">
-        <p class="params-lead">
-          Настройте условия эксперимента. Значения сохраняются при переключении на «Главная».
-        </p>
+        <p class="params-lead" data-i18n="params.lead"></p>
         <fieldset class="settings">
-          <legend>Параметры теста</legend>
+          <legend data-i18n="params.legend"></legend>
           <div class="grid">
-            <label>Количество точек <input type="number" id="cfg-numPoints" min="10" max="500" /></label>
-            <label>Ширина области (px) <input type="number" id="cfg-areaWidth" min="200" max="1200" /></label>
-            <label>Высота области (px) <input type="number" id="cfg-areaHeight" min="200" max="800" /></label>
-            <label>Скорость (px/с) <input type="number" id="cfg-dotSpeed" min="10" max="500" step="5" /></label>
-            <label>Размер точки (px) <input type="number" id="cfg-dotSize" min="0.5" max="6" step="0.5" /></label>
-            <label>Длительность trial (мс) <input type="number" id="cfg-trialDurationMs" min="200" max="10000" step="50" /></label>
-            <label>Фиксация креста (мс) <input type="number" id="cfg-fixationMs" min="100" max="2000" step="50" /></label>
-            <label>Повторов на уровень coherence <input type="number" id="cfg-repsPerLevel" min="1" max="50" /></label>
-            <label>Практика (число trial) <input type="number" id="cfg-practiceTrials" min="0" max="30" /></label>
+            <label><span data-i18n="cfg.numPoints"></span> <input type="number" id="cfg-numPoints" min="10" max="500" /></label>
+            <label><span data-i18n="cfg.areaWidth"></span> <input type="number" id="cfg-areaWidth" min="200" max="1200" /></label>
+            <label><span data-i18n="cfg.areaHeight"></span> <input type="number" id="cfg-areaHeight" min="200" max="800" /></label>
+            <label><span data-i18n="cfg.dotSpeed"></span> <input type="number" id="cfg-dotSpeed" min="10" max="500" step="5" /></label>
+            <label><span data-i18n="cfg.dotSize"></span> <input type="number" id="cfg-dotSize" min="0.5" max="6" step="0.5" /></label>
+            <label><span data-i18n="cfg.trialDurationMs"></span> <input type="number" id="cfg-trialDurationMs" min="200" max="10000" step="50" /></label>
+            <label><span data-i18n="cfg.fixationMs"></span> <input type="number" id="cfg-fixationMs" min="100" max="2000" step="50" /></label>
+            <label><span data-i18n="cfg.repsPerLevel"></span> <input type="number" id="cfg-repsPerLevel" min="1" max="50" /></label>
+            <label><span data-i18n="cfg.practiceTrials"></span> <input type="number" id="cfg-practiceTrials" min="0" max="30" /></label>
           </div>
           <label class="full">
-            Уровни coherence (%), через запятую
+            <span data-i18n="cfg.coherenceLevels"></span>
             <input type="text" id="cfg-coherenceLevels" placeholder="50, 30, 20, 10" />
           </label>
         </fieldset>
       </div>
     </section>
 
-    <!-- Экран эксперимента -->
     <section id="screen-run" class="panel screen hidden">
       <div class="run-bar">
-        <span id="run-label">Тест</span>
-        <span id="run-progress">Trial 0 из 0</span>
+        <span id="run-label" data-i18n="run.label"></span>
+        <span id="run-progress" data-i18n="run.progressInit"></span>
       </div>
       <div class="canvas-wrap">
-        <canvas id="rdm-canvas" width="600" height="400" aria-label="Поле с движущимися точками"></canvas>
+        <canvas id="rdm-canvas" width="600" height="400" data-i18n="canvas.aria" data-i18n-attr="aria-label"></canvas>
       </div>
-      <p id="run-hint" class="run-hint">Смотрите на точки и отвечайте клавишами со стрелками.</p>
+      <p id="run-hint" class="run-hint" data-i18n="run.hint"></p>
       <div class="actions">
-        <button type="button" id="btn-abort" class="btn ghost">Прервать</button>
+        <button type="button" id="btn-abort" class="btn ghost" data-i18n="run.abort"></button>
       </div>
     </section>
 
-    <!-- Результаты -->
     <section id="screen-results" class="panel screen hidden results-screen">
-      <h2 class="results-title">Результаты теста</h2>
+      <h2 class="results-title" data-i18n="results.title"></h2>
       <p id="results-meta" class="results-meta"></p>
 
       <div id="results-interpret" class="results-interpret"></div>
@@ -136,24 +127,24 @@
       <div id="metric-cards" class="metric-cards"></div>
 
       <div class="chart-block">
-        <h3 class="block-heading">Точность по уровням coherence</h3>
-        <p class="block-hint">По горизонтали — доля согласованно движущихся точек; по вертикали — процент верных ответов. Пунктирная линия — критерий порога 75%.</p>
+        <h3 class="block-heading" data-i18n="chart.title"></h3>
+        <p class="block-hint" data-i18n="chart.hint"></p>
         <div class="chart-wrap">
           <p id="chart-error" class="chart-fallback hidden" role="status"></p>
-          <canvas id="chart-accuracy" height="220" aria-label="График точности по coherence"></canvas>
+          <canvas id="chart-accuracy" height="220" data-i18n="chart.aria" data-i18n-attr="aria-label"></canvas>
         </div>
       </div>
 
       <div class="coh-table-block">
-        <h3 class="block-heading">Сводка по уровням</h3>
+        <h3 class="block-heading" data-i18n="table.summary.title"></h3>
         <div class="table-wrap table-wrap--coh">
           <table class="results-table results-table--coh" id="table-by-coherence">
             <thead>
               <tr>
-                <th>Coherence</th>
-                <th>Trial</th>
-                <th>Точность</th>
-                <th>Среднее RT</th>
+                <th data-i18n="table.summary.coh"></th>
+                <th data-i18n="table.summary.n"></th>
+                <th data-i18n="table.summary.acc"></th>
+                <th data-i18n="table.summary.rt"></th>
               </tr>
             </thead>
             <tbody id="coh-table-body"></tbody>
@@ -164,17 +155,17 @@
       <div id="explain-block" class="explain-block"></div>
 
       <details class="details-trials">
-        <summary>Все испытания (подробно)</summary>
+        <summary data-i18n="details.trials"></summary>
         <div class="table-wrap">
           <table class="results-table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Coherence %</th>
-                <th>Направление</th>
-                <th>Ответ</th>
-                <th>Исход</th>
-                <th>RT (мс)</th>
+                <th data-i18n="table.trials.hash"></th>
+                <th data-i18n="table.trials.coh"></th>
+                <th data-i18n="table.trials.dir"></th>
+                <th data-i18n="table.trials.ans"></th>
+                <th data-i18n="table.trials.out"></th>
+                <th data-i18n="table.trials.rt"></th>
               </tr>
             </thead>
             <tbody id="results-body"></tbody>
@@ -183,13 +174,10 @@
       </details>
 
       <div class="actions actions--results">
-        <button type="button" id="btn-csv" class="btn">Скачать CSV</button>
-        <button type="button" id="btn-repeat" class="btn primary">Пройти тест заново</button>
+        <button type="button" id="btn-csv" class="btn" data-i18n="btn.csv"></button>
+        <button type="button" id="btn-repeat" class="btn primary" data-i18n="btn.repeat"></button>
       </div>
     </section>
-
   </div>
-
-  <script src="script.js" defer></script>
 </body>
 </html>
