@@ -144,6 +144,77 @@ body.results-open .app {
   color: var(--muted);
 }
 
+.home-content {
+  text-align: left;
+}
+
+.home-content p {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.home-section {
+  margin-bottom: 1.35rem;
+}
+
+.home-section:last-of-type {
+  margin-bottom: 1rem;
+}
+
+.home-heading {
+  margin: 0 0 0.65rem;
+  font-size: 1.12rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.home-list {
+  margin: 0.4rem 0 0.75rem;
+  padding-left: 1.35rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.home-list li {
+  margin-bottom: 0.4rem;
+}
+
+.home-list--nested {
+  margin-top: 0.45rem;
+  margin-bottom: 0;
+}
+
+.home-steps {
+  margin: 0.4rem 0 0;
+  padding-left: 1.35rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.home-steps > li {
+  margin-bottom: 0.55rem;
+}
+
+.home-steps > li::marker {
+  font-weight: 600;
+}
+
+.home-tip {
+  margin: 0 0 1.25rem;
+  padding: 0.85rem 1rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--text);
+  background: linear-gradient(135deg, #fefce8 0%, #fffbeb 100%);
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+}
+
 kbd {
   display: inline-block;
   padding: 0.15em 0.45em;
