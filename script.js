@@ -44,6 +44,11 @@ function wrap(value, max) {
   return v;
 }
 
+function isMobileUiMode() {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+  return window.matchMedia('(max-width: 640px), (hover: none) and (pointer: coarse)').matches;
+}
+
 function parseCoherenceLevels(text) {
   const t = window.RDM_I18N.t;
   return text
@@ -348,7 +353,12 @@ class ExperimentController {
       this._trialStartPerf = now;
       this._stimulusDeadline = now + c.trialDurationMs;
       this._lastFrameTime = now;
-      this.onPhaseMessage(`${this._progressLabel(plan)} · ${window.RDM_I18N.t('exp.judgeDir')}`);
+      const showDirectionHint = !isMobileUiMode();
+      this.onPhaseMessage(
+        showDirectionHint
+          ? `${this._progressLabel(plan)} · ${window.RDM_I18N.t('exp.judgeDir')}`
+          : this._progressLabel(plan)
+      );
     }
 
     if (this.phase === 'stimulus') {
