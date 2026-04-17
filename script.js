@@ -382,12 +382,18 @@ class ExperimentController {
   }
 
   _onKeyDown(e) {
-    if (this.phase !== 'stimulus' || this._responseRecorded) return;
-    if (e.repeat) return;
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-
     e.preventDefault();
     const response = e.key === 'ArrowLeft' ? -1 : 1;
+    this.submitResponse(response);
+  }
+
+  /**
+   * Ответ пользователя из любого источника ввода (клавиатура/кнопки).
+   * @param {-1 | 1} response
+   */
+  submitResponse(response) {
+    if (this.phase !== 'stimulus' || this._responseRecorded) return;
     this._responseRecorded = true;
     this._stopRaf();
 
@@ -1056,6 +1062,8 @@ function init() {
   const canvas = document.getElementById('rdm-canvas');
   const runProgress = document.getElementById('run-progress');
   const runLabel = document.getElementById('run-label');
+  const btnAnswerLeft = document.getElementById('btn-answer-left');
+  const btnAnswerRight = document.getElementById('btn-answer-right');
 
   let controller = null;
 
@@ -1120,6 +1128,18 @@ function init() {
   document.getElementById('btn-repeat').addEventListener('click', () => {
     showScreen('start');
   });
+
+  if (btnAnswerLeft) {
+    btnAnswerLeft.addEventListener('click', () => {
+      if (controller) controller.submitResponse(-1);
+    });
+  }
+
+  if (btnAnswerRight) {
+    btnAnswerRight.addEventListener('click', () => {
+      if (controller) controller.submitResponse(1);
+    });
+  }
 
   document.getElementById('btn-csv').addEventListener('click', () => {
     const csv = resultsToCSV(lastResults);

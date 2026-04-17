@@ -58,7 +58,10 @@
 
       'run.label': 'Тест',
       'run.progressInit': 'Испытание 0 из 0',
-      'run.hint': 'Смотрите на точки и отвечайте клавишами со стрелками.',
+      'run.hint': 'Смотрите на точки и отвечайте кнопками ниже или клавишами со стрелками.',
+      'run.controlsAria': 'Кнопки ответа на направление движения',
+      'run.answerLeft': '⬅️ Влево',
+      'run.answerRight': '➡️ Вправо',
       'run.abort': 'Прервать',
       'canvas.aria': 'Поле с движущимися точками',
 
@@ -197,7 +200,10 @@
 
       'run.label': 'Test',
       'run.progressInit': 'Trial 0 of 0',
-      'run.hint': 'Watch the dots and respond with the arrow keys.',
+      'run.hint': 'Watch the dots and respond using the buttons below or the arrow keys.',
+      'run.controlsAria': 'Direction response buttons',
+      'run.answerLeft': '⬅️ Left',
+      'run.answerRight': '➡️ Right',
       'run.abort': 'Abort',
       'canvas.aria': 'Moving dot field',
 

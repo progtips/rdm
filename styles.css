@@ -375,6 +375,34 @@ kbd {
   color: var(--muted);
 }
 
+.run-controls {
+  display: none;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 0.75rem;
+  margin: 0 auto 1rem;
+  max-width: 460px;
+}
+
+.run-answer {
+  min-height: 3.1rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-width: 2px;
+  touch-action: manipulation;
+}
+
+.run-answer--left {
+  border-color: #93c5fd;
+}
+
+.run-answer--right {
+  border-color: #86efac;
+}
+
+.run-answer:active {
+  transform: translateY(1px);
+}
+
 /* ——— Экран результатов ——— */
 
 .results-screen {
@@ -658,4 +686,22 @@ kbd {
   background: var(--bg);
   padding: 0.1em 0.35em;
   border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+  .run-controls {
+    display: grid;
+    max-width: 100%;
+  }
+
+  .run-answer {
+    min-height: 3.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .run-controls {
+    display: grid;
+  }
 }
