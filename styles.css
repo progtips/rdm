@@ -690,7 +690,19 @@ kbd {
 
 @media (max-width: 640px) {
   .run-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.55rem;
+    font-size: 0.98rem;
+  }
+
+  #run-label {
     display: none;
+  }
+
+  #run-progress {
+    font-weight: 600;
+    color: var(--text);
   }
 
   .run-controls {
@@ -706,7 +718,19 @@ kbd {
 
 @media (hover: none) and (pointer: coarse) {
   .run-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.55rem;
+    font-size: 0.98rem;
+  }
+
+  #run-label {
     display: none;
+  }
+
+  #run-progress {
+    font-weight: 600;
+    color: var(--text);
   }
 
   .run-controls {

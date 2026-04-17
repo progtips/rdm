@@ -320,9 +320,12 @@ class ExperimentController {
   }
 
   _progressLabel(plan) {
-    const t = window.RDM_I18N.t;
     const total = this.queue.length;
     const i = this.currentIndex + 1;
+    if (isMobileUiMode()) {
+      return `${i}/${total}`;
+    }
+    const t = window.RDM_I18N.t;
     const mode = plan.practice ? t('exp.practice') : t('exp.test');
     return t('exp.progress', { mode, trial: t('exp.trial'), i, total });
   }
@@ -353,11 +356,11 @@ class ExperimentController {
       this._trialStartPerf = now;
       this._stimulusDeadline = now + c.trialDurationMs;
       this._lastFrameTime = now;
-      const showDirectionHint = !isMobileUiMode();
+      const baseLabel = this._progressLabel(plan);
       this.onPhaseMessage(
-        showDirectionHint
-          ? `${this._progressLabel(plan)} · ${window.RDM_I18N.t('exp.judgeDir')}`
-          : this._progressLabel(plan)
+        isMobileUiMode()
+          ? baseLabel
+          : `${baseLabel} · ${window.RDM_I18N.t('exp.judgeDir')}`
       );
     }
 
@@ -453,7 +456,8 @@ class ExperimentController {
     }
 
     this.phase = 'feedback';
-    this.onPhaseMessage(`${this._progressLabel(plan)} · ${msg}`);
+    const baseLabel = this._progressLabel(plan);
+    this.onPhaseMessage(isMobileUiMode() ? baseLabel : `${baseLabel} · ${msg}`);
 
     if (this.field) {
       this.ctx.fillStyle = 'rgba(15, 17, 21, 0.88)';
