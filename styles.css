@@ -690,15 +690,7 @@ kbd {
 
 @media (max-width: 640px) {
   .run-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.2rem;
-  }
-
-  #run-progress {
-    display: block;
-    min-height: 2.8em;
-    line-height: 1.4;
+    display: none;
   }
 
   .run-controls {
@@ -714,15 +706,7 @@ kbd {
 
 @media (hover: none) and (pointer: coarse) {
   .run-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.2rem;
-  }
-
-  #run-progress {
-    display: block;
-    min-height: 2.8em;
-    line-height: 1.4;
+    display: none;
   }
 
   .run-controls {
